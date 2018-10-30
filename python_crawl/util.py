@@ -51,6 +51,12 @@ def getStringAfterLastSlash(path):
         i = i - 1
     return path[i + 1:len(path) - 1]
 
+def goToIdInPage(path):
+    lastName = getStringAfterLastSlash(path)
+    if lastName.find("#") != -1:
+        return 1
+    return 0
+
 def getDeep(path):
     i = len(path) - 1
     deep = 0

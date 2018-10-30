@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 from util import initAllowElem
 from util import getStringAfterLastSlash
 from util import getDeep
+from util import goToIdInPage
 import time
 import urllib3
 
@@ -67,7 +68,7 @@ class Spider:
                     fp.write(soup.prettify())
 
                 with open("./text/" + getStringAfterLastSlash(page_url).replace(' ', '_') + ".txt", 'a', encoding="utf-8") as fp:
-                    fp.write(soup.get_text())
+                    fp.write(soup.get_text().strip())
 
                 for elem in soup.find_all("a", href=True):
                     link = urljoin(page_url, elem['href'])
@@ -82,7 +83,7 @@ class Spider:
     @staticmethod
     def addLinksToQueue(links, temp):
         for url in links:
-            if (url in Spider.queue) or (url in Spider.temp):
+            if (url in Spider.queue) or (url in Spider.temp) or (goToIdInPage(url)):
                 continue
             if Spider.domain_name != getDomainName(url):
                 continue
