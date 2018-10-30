@@ -55,6 +55,8 @@ def goToIdInPage(path):
     lastName = getStringAfterLastSlash(path)
     if lastName.find("#") != -1:
         return 1
+    if lastName.find("?") != -1:
+        return 1
     return 0
 
 def getDeep(path):
@@ -62,6 +64,8 @@ def getDeep(path):
     deep = 0
     end = 0
     if path[0:8] == "https://":
+        end = 8
+    if path[0:7] == "http://":
         end = 7
     if path[end:4] == "www.":
         end = end + 4

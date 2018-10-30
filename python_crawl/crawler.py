@@ -68,7 +68,7 @@ class Spider:
                     fp.write(soup.prettify())
 
                 with open("./text/" + getStringAfterLastSlash(page_url).replace(' ', '_') + ".txt", 'a', encoding="utf-8") as fp:
-                    fp.write(soup.get_text().strip())
+                    fp.write(soup.get_text())
 
                 for elem in soup.find_all("a", href=True):
                     link = urljoin(page_url, elem['href'])
