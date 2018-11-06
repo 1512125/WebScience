@@ -16,14 +16,14 @@ class Spider:
     # Class variables (shared among all instances)
     domain_name = ''
     base_url = ''
-    deep = 7
+    depth = 7
     queue = set()
     crawled = set()
 
     def __init__(self, domain_name, base_url, deep):
         Spider.domain_name = domain_name
         Spider.deep = deep
-        for i in range(Spider.deep):
+        for i in range(Spider.depth):
             temp = str("crawled_" + str(i))
             Spider.temp = set()
         Spider.base_url = base_url
@@ -59,7 +59,7 @@ class Spider:
         for retries in range(5):
             try:
                 s = requests.Session()
-                s.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'
+                s.headers['User-Agent'] = 'nguyenhuudatduc HCMUS'
                 content = s.get(page_url)
                 if content.status_code != 200:
                     raise ValueError("Invalid Response Received From Webserver")
