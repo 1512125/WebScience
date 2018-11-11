@@ -31,6 +31,10 @@ def initFolder(path):
 
     with open("./static/timeCalculate.csv", 'a') as fp:
         fp.write("title, startTime, endTime, total\n")
+    with open("./static/pageLength.csv", 'a') as fp:
+        fp.write("url, length\n")
+    with open("./static/urls.csv", 'a') as fp:
+        fp.write("url\n")
 
 def createFolder(path):
     try:

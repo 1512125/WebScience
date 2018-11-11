@@ -2,36 +2,32 @@ import threading
 from queue import Queue
 from util import getDomainName
 from util import initFolder
-from crawler import Spider
+from crawler import Crawler
 
 NUM_SPIDERS = 12
-DEEP = 7
+DEPTH = 7
 HOMEPAGE = 'https://vnexpress.net/'
 DOMAIN_NAME = getDomainName(HOMEPAGE)
 initFolder(".")
-Spider(DOMAIN_NAME, HOMEPAGE, DEEP)
+Crawler(DOMAIN_NAME, HOMEPAGE, DEPTH)
 q = Queue()
 
-
-# crawl the next url
 def work():
     while True:
         url = q.get()
-        Spider.crawlPage(threading.currentThread().name, url)
+        Crawler.crawlPage(threading.currentThread().name, url)
         q.task_done()
 
-
 # Create spider threads (will be terminated when main exits)
-def createSpiders():
+def createCrawlers():
     for spider in range(NUM_SPIDERS):
         t = threading.Thread(target=work)
         t.daemon = True
         t.start()
 
-
 # Each queued link is a new job
 def createJobs():
-    for link in Spider.queue:
+    for link in Crawler.queue:
         q.put(link)
     q.join()
     crawl()
@@ -39,15 +35,11 @@ def createJobs():
 
 # Check if there are items in queue, if so crawl it
 def crawl():
-    if len(Spider.queue) > 0:
-        print(str(len(Spider.queue)) + " links in the queue")
+    if len(Crawler.queue) > 0:
+        print(str(len(Crawler.queue)) + " links in the queue")
         createJobs()
 
-createSpiders()
+createCrawlers()
 crawl()
-
-
-
-
 
 

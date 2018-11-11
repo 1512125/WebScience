@@ -89,137 +89,140 @@ public class MyCrawler extends WebCrawler {
 			  */
 			  @Override
 			  public void visit(Page page) {
-			  String url = page.getWebURL().getURL();
-			  String contentType = new String();
-			  
-			  try {
-			  URL url1 = new URL(url);
-			  HttpURLConnection connection = (HttpURLConnection)  url1.openConnection();
-			  connection.setRequestMethod("HEAD");
-			  connection.connect();
-			  contentType = connection.getContentType();
-			  }
-			  catch (MalformedURLException e) {
-		            e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			  
-			  if (page.getParseData() instanceof HtmlParseData) {
-			  HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-			  String html = htmlParseData.getHtml();
-			  String text = htmlParseData.getText();
-			  Set<WebURL> links = htmlParseData.getOutgoingUrls();
-
-			  try
-              {
-				  String hashedName = URLEncoder.encode(url, "UTF-8");
-				  File outputfile = new File(storageFolder.getAbsolutePath() + "/data/" + hashedName + ".html");
-				  File outputfileText = new File(storageFolder.getAbsolutePath() + "/data/" + hashedName + ".txt");
-				  //If file doesnt exists, then create it
-                   if(!outputfile.exists()){
-                       outputfile.createNewFile();
-                   }
-                   if(!outputfileText.exists()){
-                	   outputfileText.createNewFile();
-                   }
-
-                    BufferedWriter bufferWritter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputfile),"UTF-8"));
-                    bufferWritter.write(html);
-                    bufferWritter.close();
-                    
-                    BufferedWriter bufferWritterText = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputfileText),"UTF-8"));
-                    bufferWritterText.write(html);
-                    bufferWritterText.close();
-                  
-                  FileWriter writer = new FileWriter(visit, true);
-				    writer.append(url);
-				    writer.append(',');
-				    Long size = (Long) outputfile.length()/1024; 
-				    writer.append(size.toString());
-				    writer.append(',');
-				    Integer outlinks = (Integer) links.size(); 
-				    writer.append(outlinks.toString());
-				    writer.append(',');
-				    writer.append(contentType);
-				    writer.append('\n');
-				    writer.flush();
-				    writer.close();
-				    
-				  FileWriter pagerank = new FileWriter(pagerankdata, true);
-				    pagerank.append(url);
-				    for (WebURL link : links){
-				    	pagerank.append(',');
-				    	pagerank.append(link.getURL());
-				    }
-				    pagerank.append('\n');
-				    pagerank.flush();
-				    pagerank.close(); 
-				    
-				  FileWriter id = new FileWriter(docid, true);
-				    id.append(url);
-				    id.append(',');
-				    id.append(hashedName);
-				    id.append('\n');
-				    id.flush();
-				    id.close();
-                  
-              }catch(IOException e)
-              {
-                  System.out.println("IOException : " + e.getMessage() );
-                  e.printStackTrace();
-              }
-			  }
-			  
-			  else if (docPatterns.matcher(url).matches()) {
-
-				    // get a unique name for storing this document
-				    String filename = "";
-				    
-				    try {
-				    	String hashedName = URLEncoder.encode(url, "UTF-8");
-
-					    // store document
-					    filename = storageFolder.getAbsolutePath() + "/data/" + hashedName;
-					    File outputfile = new File(filename, "UTF-8");
-				      Files.write(page.getContentData(), outputfile);
-				      
-				      FileWriter writer = new FileWriter(visit, true);
-						 
-					    writer.append(url);
-					    writer.append(',');
-					    Long size = (Long) outputfile.length()/1024;
-					    writer.append(size.toString());
-					    writer.append(',');
-					    if (page.getParseData() instanceof BinaryParseData){
-					    	BinaryParseData binaryParseData = (BinaryParseData) page.getParseData();
-					    	Set<WebURL> links = binaryParseData.getOutgoingUrls();
-					    	Integer outlinks = (Integer) links.size();
-					    	writer.append(outlinks.toString());
-					    }
-					    else if (page.getParseData() instanceof TextParseData){
-					    	TextParseData textParseData = (TextParseData) page.getParseData();
-					    	Set<WebURL> links = textParseData.getOutgoingUrls();
-					    	Integer outlinks = (Integer) links.size();
-					    	writer.append(outlinks.toString());
-					    }
-
-					    else
-					    	writer.append(hashedName);
-					    writer.append(',');
-					    writer.append(contentType);
-					    writer.append('\n');
+				  String url = page.getWebURL().getURL();
+				  String contentType = new String();
+				  
+				  try {
+					  URL url1 = new URL(url);
+					  HttpURLConnection connection = (HttpURLConnection)  url1.openConnection();
+					  connection.setRequestMethod("HEAD");
+					  connection.connect();
+					  contentType = connection.getContentType();
+				  }
+				  catch (MalformedURLException e) {
+			          e.printStackTrace();
+				  } 
+				  catch (IOException e) {
+					  e.printStackTrace();
+				  }
+				  
+				  if (page.getParseData() instanceof HtmlParseData) {
+					  HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
+					  String html = htmlParseData.getHtml();
+					  String text = htmlParseData.getText();
+					  Set<WebURL> links = htmlParseData.getOutgoingUrls();
+		
+					  try
+		              {
+						  String hashedName = URLEncoder.encode(url, "UTF-8");
+						  File outputfile = new File(storageFolder.getAbsolutePath() + "/data/" + hashedName + ".html");
+						  File outputfileText = new File(storageFolder.getAbsolutePath() + "/data/" + hashedName + ".txt");
+						  //If file doesnt exists, then create it
+		                   if(!outputfile.exists()){
+		                       outputfile.createNewFile();
+		                   }
+		                   if(!outputfileText.exists()){
+		                	   outputfileText.createNewFile();
+		                   }
+		
+		                    BufferedWriter bufferWritter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputfile),"UTF-8"));
+		                    bufferWritter.write(html);
+		                    bufferWritter.close();
+		                    
+		                    BufferedWriter bufferWritterText = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputfileText),"UTF-8"));
+		                    bufferWritterText.write(text);
+		                    bufferWritterText.close();
+		                  
+		                  FileWriter writer = new FileWriter(visit, true);
+						    writer.append(url);
+						    writer.append(',');
+						    Long size = (Long) outputfile.length()/1024; 
+						    writer.append(size.toString());
+						    writer.append(',');
+						    Integer outlinks = (Integer) links.size(); 
+						    writer.append(outlinks.toString());
+						    writer.append(',');
+						    writer.append(contentType);
+						    writer.append('\n');
+						    writer.flush();
+						    writer.close();
+						    
+						  FileWriter pagerank = new FileWriter(pagerankdata, true);
+						    pagerank.append(url);
+						    for (WebURL link : links){
+						    	pagerank.append(',');
+						    	pagerank.append(link.getURL());
+						    }
+						    pagerank.append('\n');
+						    pagerank.flush();
+						    pagerank.close(); 
+						    
+						  FileWriter id = new FileWriter(docid, true);
+						    id.append(url);
+						    id.append(',');
+						    id.append(hashedName);
+						    id.append('\n');
+						    id.flush();
+						    id.close();
+		                  
+		              }
+					  catch(IOException e)
+		              {
+		                  System.out.println("IOException : " + e.getMessage() );
+		                  e.printStackTrace();
+		              }
+				  }
+				  
+				  else if (docPatterns.matcher(url).matches()) {
+	
+					    // get a unique name for storing this document
+					    String filename = "";
 					    
-					    writer.flush();
-					    writer.close();
-				    } catch (IOException iox) {
-				      logger.error("Failed to write file: " + filename, iox);
-					}
-			  }  		  
-  	}
+					    try {
+					    	String hashedName = URLEncoder.encode(url, "UTF-8");
+	
+						    // store document
+						    filename = storageFolder.getAbsolutePath() + "/data/" + hashedName;
+						    File outputfile = new File(filename, "UTF-8");
+					      Files.write(page.getContentData(), outputfile);
+					      
+					      FileWriter writer = new FileWriter(visit, true);
+							 
+						    writer.append(url);
+						    writer.append(',');
+						    Long size = (Long) outputfile.length()/1024;
+						    writer.append(size.toString());
+						    writer.append(',');
+						    if (page.getParseData() instanceof BinaryParseData){
+						    	BinaryParseData binaryParseData = (BinaryParseData) page.getParseData();
+						    	Set<WebURL> links = binaryParseData.getOutgoingUrls();
+						    	Integer outlinks = (Integer) links.size();
+						    	writer.append(outlinks.toString());
+						    }
+						    else if (page.getParseData() instanceof TextParseData){
+						    	TextParseData textParseData = (TextParseData) page.getParseData();
+						    	Set<WebURL> links = textParseData.getOutgoingUrls();
+						    	Integer outlinks = (Integer) links.size();
+						    	writer.append(outlinks.toString());
+						    }
+	
+						    else
+						    	writer.append(hashedName);
+							    writer.append(',');
+							    writer.append(contentType);
+							    writer.append('\n');
+							    
+							    writer.flush();
+							    writer.close();
+					    } 
+					    catch (IOException iox) {
+					      logger.error("Failed to write file: " + filename, iox);
+						}
+				  	}  		  
+			  }
 			  
 			  @Override
-				protected void handlePageStatusCode(WebURL webUrl, int statusCode, String statusDescription) {
+			  protected void handlePageStatusCode(WebURL webUrl, int statusCode, String statusDescription) {
 					
 					try
 					{
